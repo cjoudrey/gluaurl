@@ -41,6 +41,7 @@ func main() {
 - [`url.parse(url)`](#urlparseurl)
 - [`url.build(options)`](#urlbuildoptions)
 - [`url.build_query_string(query_params)`](#urlbuild_query_stringquery_params)
+- [`url.resolve(from, to)`](#urlresolvefrom-to)
 
 ### url.parse(url)
 
@@ -93,3 +94,16 @@ Assemble table of query string parameters into a string.
 **Returns**
 
 String
+
+### url.resolve(from, to)
+
+Take a base URL, and a href URL, and resolve them as a browser would for an anchor tag.
+
+| Name | Type   | Description |
+| ---- | ------ | ----------- |
+| from | String | base URL |
+| to | String | href URL |
+
+**Returns**
+
+String or (nil, error message)

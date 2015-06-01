@@ -190,6 +190,29 @@ assert_query_string(
 	}
 }
 
+func TestResolve(t *testing.T) {
+	output, err := evalScript(`
+local url = require("url")
+
+print(url.resolve('/one/two/three', 'four'))
+print(url.resolve('http://example.com/', '/one'))
+print(url.resolve('http://example.com/one', '/two'))
+print(url.resolve('https://example.com/one', '//example2.com'))
+`)
+
+	if err != nil {
+		t.Errorf("Failed to evaluate script: %s", err)
+	} else {
+		if expected := `/one/two/four
+http://example.com/one
+http://example.com/two
+https://example2.com
+`; expected != output {
+			t.Errorf("Expected output does not match actual output\nExpected: %s\nActual: %s", expected, output)
+		}
+	}
+}
+
 func evalScript(script string) (string, error) {
 	L := lua.NewState()
 	defer L.Close()

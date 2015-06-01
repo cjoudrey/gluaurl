@@ -14,6 +14,7 @@ func Loader(L *lua.LState) int {
 		"parse":              parse,
 		"build":              build,
 		"build_query_string": buildQueryString,
+		"resolve":            resolve,
 	})
 	L.Push(mod)
 	return 1
@@ -22,7 +23,12 @@ func Loader(L *lua.LState) int {
 func parse(L *lua.LState) int {
 	parsed := L.NewTable()
 
-	url, _ := url.Parse(L.CheckString(1))
+	url, err := url.Parse(L.CheckString(1))
+	if err != nil {
+		L.Push(lua.LNil)
+		L.Push(lua.LString(fmt.Sprintf("%s", err)))
+		return 2
+	}
 
 	parsed.RawSetString("scheme", lua.LString(url.Scheme))
 
@@ -146,4 +152,27 @@ func toQueryString(prefix string, lv lua.LValue, ret *[]string) {
 		}
 		break
 	}
+}
+
+func resolve(L *lua.LState) int {
+	from := L.CheckString(1)
+	to := L.CheckString(2)
+
+	fromUrl, err := url.Parse(from)
+	if err != nil {
+		L.Push(lua.LNil)
+		L.Push(lua.LString(fmt.Sprintf("%s", err)))
+		return 2
+	}
+
+	toUrl, err := url.Parse(to)
+	if err != nil {
+		L.Push(lua.LNil)
+		L.Push(lua.LString(fmt.Sprintf("%s", err)))
+		return 2
+	}
+
+	resolvedUrl := fromUrl.ResolveReference(toUrl).String()
+	L.Push(lua.LString(resolvedUrl))
+	return 1
 }

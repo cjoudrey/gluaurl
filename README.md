@@ -14,7 +14,7 @@ go get github.com/cjoudrey/gluaurl
 
 ```go
 import "github.com/yuin/gopher-lua"
-import "github.com/cjoudrey/gluahttp"
+import "github.com/cjoudrey/gluaurl"
 
 func main() {
     L := lua.NewState()
